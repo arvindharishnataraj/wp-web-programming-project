@@ -1,0 +1,27 @@
+{
+  "name": "geopulse-live",
+  "version": "1.0.0",
+  "description": "GeoPulse 360 - Real-Time Global Seismic, Climate & Space Telemetry Intelligence Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "web-programming",
+    "real-time",
+    "usgs-earthquakes",
+    "open-meteo",
+    "iss-tracker",
+    "leaflet",
+    "chartjs",
+    "server-sent-events",
+    "full-stack"
+  ],
+  "author": "Web Programming Project",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

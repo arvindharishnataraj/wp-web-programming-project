@@ -1,0 +1,56 @@
+[
+  {
+    "id": "bm-chennai",
+    "type": "coastal",
+    "name": "Chennai, Tamil Nadu",
+    "latitude": 13.0827,
+    "longitude": 80.2707,
+    "notes": "Bay of Bengal Coastal Radar & Cyclone Watch",
+    "createdAt": "2026-10-13T20:00:00.000Z"
+  },
+  {
+    "id": "bm-bengaluru",
+    "type": "city",
+    "name": "Bengaluru, Karnataka",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "notes": "ISRO Telemetry & Deccan Climate Station",
+    "createdAt": "2026-10-13T20:05:00.000Z"
+  },
+  {
+    "id": "bm-hyderabad",
+    "type": "tsunami-center",
+    "name": "Hyderabad, Telangana (INCOIS)",
+    "latitude": 17.3850,
+    "longitude": 78.4867,
+    "notes": "Indian National Centre for Ocean Information Services & Tsunami Early Warning",
+    "createdAt": "2026-10-13T20:10:00.000Z"
+  },
+  {
+    "id": "bm-kochi",
+    "type": "marine",
+    "name": "Kochi, Kerala",
+    "latitude": 9.9312,
+    "longitude": 76.2673,
+    "notes": "Arabian Sea Monsoon & Marine Telemetry",
+    "createdAt": "2026-10-13T20:15:00.000Z"
+  },
+  {
+    "id": "bm-vizag",
+    "type": "cyclone",
+    "name": "Visakhapatnam, Andhra Pradesh",
+    "latitude": 17.6868,
+    "longitude": 83.2185,
+    "notes": "East Coast Cyclone Warning Centre",
+    "createdAt": "2026-10-13T20:20:00.000Z"
+  },
+  {
+    "id": "bm-andaman",
+    "type": "seismic",
+    "name": "Port Blair, Andaman & Nicobar",
+    "latitude": 11.6234,
+    "longitude": 92.7265,
+    "notes": "Indo-Burma Subduction Trench Seismic Station",
+    "createdAt": "2026-10-13T20:25:00.000Z"
+  }
+]

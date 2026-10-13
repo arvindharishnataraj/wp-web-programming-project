@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoPulse 360 | Real-Time Planetary & Climate Intelligence</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= App Header & Mission Control ================= -->
+  <header class="app-header">
+    <div class="brand-section">
+      <img src="favicon.svg" alt="GeoPulse Radar" class="brand-logo">
+      <div>
+        <h1 class="brand-title">GEOPULSE 360</h1>
+        <div class="brand-tagline">South India &amp; Global Environmental Telemetry</div>
+      </div>
+      <div id="streamStatusBadge" class="status-badge online">
+        <span class="status-pulse"></span> CONNECTING...
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div id="liveClockUtc" class="telemetry-clock">--:--:-- UTC</div>
+
+      <div class="refresh-widget">
+        <span>Refresh:</span>
+        <span id="countdownDisplay" class="countdown-badge">30s</span>
+        <div class="pill-group">
+          <button class="interval-pill" data-sec="15">15s</button>
+          <button class="interval-pill active" data-sec="30">30s</button>
+          <button class="interval-pill" data-sec="60">60s</button>
+          <button class="interval-pill" data-sec="0">⏸</button>
+        </div>
+      </div>
+
+      <button id="manualRefreshBtn" class="header-btn" title="Force Refresh">
+        🔄 Sync Now
+      </button>
+
+      <button id="soundToggleBtn" class="header-btn" title="Toggle Acoustic Alerts">
+        🔇 Sound: OFF
+      </button>
+
+      <button id="themeToggleBtn" class="header-btn" title="Toggle Light/Dark Theme">
+        ☀️ Light Mode
+      </button>
+
+      <button id="exportCsvBtn" class="header-btn" title="Download Telemetry CSV">
+        📥 Export CSV
+      </button>
+
+      <button id="printReportBtn" class="header-btn" title="Print Executive Summary">
+        🖨️ Print
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= Dashboard Main Content ================= -->
+  <main class="dashboard-container">
+
+    <!-- KPI Summary Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon-box">🌍</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Earthquakes (24h)</span>
+          <span id="kpiTotalQuakes" class="kpi-value">--</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-box alert-box">⚡</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Peak Magnitude</span>
+          <span id="kpiMaxMag" class="kpi-value">--</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-box warning-box">🌊</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Tsunami Advisories</span>
+          <span id="kpiTsunami" class="kpi-value">--</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-box">🌋</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Deep Events (>100km)</span>
+          <span id="kpiDeepQuakes" class="kpi-value">--</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-box space-box">🛰️</div>
+        <div class="kpi-info">
+          <span class="kpi-label">ISS Orbit Speed</span>
+          <span id="kpiIssVelocity" class="kpi-value">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2-Column Core Layout -->
+    <div class="main-layout-grid">
+
+      <!-- LEFT COLUMN: Global Map & Telemetry Visualizations -->
+      <div class="left-panel">
+        
+        <!-- Interactive Map Container -->
+        <div class="map-wrapper-card">
+          <div class="map-toolbar">
+            <div class="toolbar-group">
+              <span>🌐 Basemap:</span>
+              <button class="basemap-btn active" data-basemap="dark">Dark Canvas</button>
+              <button class="basemap-btn" data-basemap="street">Street (OSM)</button>
+              <button class="basemap-btn" data-basemap="satellite">Satellite</button>
+              <button class="basemap-btn" data-basemap="topo">Topographic</button>
+            </div>
+            <div class="toolbar-group">
+              <button id="mapSouthIndiaBtn" class="map-tool-btn" title="Focus South India">🇮🇳 South India</button>
+              <button id="mapCenterUserBtn" class="map-tool-btn" title="Center on your GPS location">📍 My GPS</button>
+              <button id="mapResetBtn" class="map-tool-btn" title="Reset Global View">🌍 Global View</button>
+            </div>
+          </div>
+
+          <div class="station-jump-strip">
+            <span class="jump-label">📡 Observatories:</span>
+            <button class="station-jump-pill active" data-station="chennai">🌊 Chennai (Bay of Bengal)</button>
+            <button class="station-jump-pill" data-station="bengaluru">🏙️ Bengaluru (ISRO Hub)</button>
+            <button class="station-jump-pill" data-station="hyderabad">🏛️ Hyderabad (INCOIS)</button>
+            <button class="station-jump-pill" data-station="kochi">🌴 Kochi (Arabian Sea)</button>
+            <button class="station-jump-pill" data-station="vizag">⚓ Visakhapatnam</button>
+            <button class="station-jump-pill" data-station="andaman">🏝️ Andaman Trench</button>
+          </div>
+
+          <div id="map"></div>
+
+          <div class="map-legend-bar">
+            <span>Seismic &amp; Hazard Legend:</span>
+            <div class="legend-items">
+              <span class="leg-item"><span class="leg-dot" style="background:#10b981;"></span> &lt; M2.5 Micro</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#38bdf8;"></span> M2.5 - 3.9 Minor</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#f59e0b;"></span> M4.0 - 4.9 Moderate</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#ef4444;"></span> M5.0 - 6.4 Strong</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#a855f7;"></span> M6.5+ Major</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#00f3ff;"></span> 🛰️ ISS Orbit</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry Charts Grid -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-header">
+              <span class="chart-title">📊 Magnitude Bracket Distribution</span>
+            </div>
+            <div class="chart-container-box">
+              <canvas id="magnitudeChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <span class="chart-title">🌋 Focal Depth vs. Magnitude (40 Events)</span>
+            </div>
+            <div class="chart-container-box">
+              <canvas id="depthChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hourly Atmospheric Trends Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">🌤️ 24-Hour Forecast Curve (Station Observation)</span>
+          </div>
+          <div class="chart-container-box">
+            <canvas id="weatherChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Alert Feed, Weather Center & Watchlist -->
+      <div class="right-panel">
+
+        <!-- Live Seismic Event Feed -->
+        <div class="telemetry-card">
+          <div class="card-title-row">
+            <h2 class="section-heading">📡 Live Seismic Alert Feed</h2>
+            <span id="feedCountBadge" class="status-badge" style="background: rgba(0, 243, 255, 0.1); color: var(--accent-cyan);">-- shown</span>
+          </div>
+
+          <div class="feed-filters">
+            <input type="text" id="alertSearchInput" class="feed-search-input" placeholder="🔍 Search region (e.g. Chennai, Andaman, Sumatra, California)...">
+            
+            <div class="filter-pills-row">
+              <button class="filter-pill active" data-mag="0">All</button>
+              <button class="filter-pill regional-pill" data-indianocean="true">🇮🇳 Indian Ocean &amp; South Asia</button>
+              <button class="filter-pill" data-mag="2.5">M2.5+</button>
+              <button class="filter-pill" data-mag="4.0">M4.0+</button>
+              <button class="filter-pill" data-mag="5.0">M5.0+ Urgent</button>
+              <button class="filter-pill tsunami-pill" data-tsunami="true">🌊 Tsunami Risk</button>
+            </div>
+          </div>
+
+          <div id="alertFeedList" class="feed-scroll-container">
+            <!-- Dynamic incident cards injected by app.js -->
+            <div class="empty-feed-card">Awaiting seismic feed data...</div>
+          </div>
+        </div>
+
+        <!-- Atmospheric & Climate Intelligence Center -->
+        <div id="weatherTelemetryCard" class="telemetry-card">
+          <div class="card-title-row">
+            <h2 class="section-heading">🌤️ Atmospheric & Air Quality Hub</h2>
+            <button id="addCurrentToWatchlistBtn" class="header-btn" style="padding: 4px 8px; font-size: 0.72rem;">
+              📌 Bookmark Station
+            </button>
+          </div>
+
+          <!-- City Search with Autocomplete -->
+          <div class="weather-search-wrapper">
+            <input type="text" id="citySearchInput" class="feed-search-input" placeholder="Search city (e.g. Chennai, Bengaluru, Kochi, Hyderabad, Delhi)..." autocomplete="off">
+            <div id="citySearchResults" class="suggest-dropdown"></div>
+          </div>
+
+          <!-- Weather Header Display -->
+          <div class="weather-header-row">
+            <div class="city-main-info">
+              <h3 id="weatherCityTitle">Chennai, Tamil Nadu</h3>
+              <span id="weatherCoords" class="city-coords-meta">13.08°N, 80.27°E</span>
+            </div>
+
+            <div class="weather-temp-hero">
+              <span id="weatherIconLarge" class="weather-icon-huge">☀️</span>
+              <div>
+                <div id="weatherTempLarge" class="temp-huge">21<span class="temp-unit">°C</span></div>
+                <div id="weatherConditionText" class="weather-condition-desc">Clear Sky</div>
+                <div id="weatherFeelsLike" class="weather-feels">Feels like 21°C</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4-Metrics Grid -->
+          <div class="weather-metrics-grid">
+            <div class="met-box">
+              <span class="met-lbl">Wind Speed</span>
+              <div id="weatherWindSpeed" class="met-val">-- km/h</div>
+            </div>
+            <div class="met-box">
+              <span class="met-lbl">Humidity</span>
+              <div id="weatherHumidity" class="met-val">-- %</div>
+            </div>
+            <div class="met-box">
+              <span class="met-lbl">Barometer</span>
+              <div id="weatherPressure" class="met-val">-- hPa</div>
+            </div>
+            <div class="met-box">
+              <span class="met-lbl">Precipitation</span>
+              <div id="weatherPrecip" class="met-val">-- mm</div>
+            </div>
+          </div>
+
+          <!-- Air Quality Strip -->
+          <div class="aqi-strip">
+            <div>
+              <strong>Air Quality Index (AQI):</strong>
+              <span id="weatherAqiValue" style="margin-left: 6px; font-weight: bold;">--</span>
+            </div>
+            <div class="aqi-breakdown">
+              <span>PM2.5: <strong id="weatherPm25">--</strong></span>
+              <span>PM10: <strong id="weatherPm10">--</strong></span>
+            </div>
+          </div>
+
+          <!-- 5-Day Mini Forecast Strip -->
+          <div id="weatherMiniForecast" class="mini-forecast-strip">
+            <!-- Injected by weather.js -->
+          </div>
+        </div>
+
+        <!-- Saved Stations / Watchlist -->
+        <div class="telemetry-card">
+          <div class="card-title-row">
+            <h2 class="section-heading">📌 Monitored Watchlist Stations</h2>
+          </div>
+          <div id="watchlistItemsList" class="watchlist-container">
+            <!-- Injected by app.js -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Notification Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Leaflet & Chart.js CDNs -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Application Modules -->
+  <script src="audio.js"></script>
+  <script src="charts.js"></script>
+  <script src="map.js"></script>
+  <script src="weather.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
