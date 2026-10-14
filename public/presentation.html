@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeoPulse 360 | Final Project Presentation - Arvind Harish</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    --bg-dark: #090e18;
+    --card-bg: rgba(14, 23, 38, 0.95);
+    --border-subtle: rgba(0, 243, 255, 0.2);
+    --accent-cyan: #00f3ff;
+    --accent-gold: #f59e0b;
+    --accent-emerald: #10b981;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-main);
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Presentation Header */
+  .pres-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: rgba(14, 23, 38, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+  }
+  .pres-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent-cyan);
+  }
+  .pres-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pres-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pres-btn:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+  .slide-counter {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--text-secondary);
+  }
+
+  /* Slide Deck Container */
+  .deck-container {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    max-height: 680px;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 36px 44px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    flex-direction: column;
+    overflow-y: auto;
+    animation: fadeIn 0.3s ease;
+  }
+  .slide.active {
+    display: flex;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Typography */
+  .category-pill {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    margin-bottom: 8px;
+  }
+  .slide-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 12px;
+  }
+
+  /* Title Slide Specifics */
+  .title-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 14px;
+  }
+  .rec-badge {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--accent-gold);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .big-title {
+    font-size: 3.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .big-subtitle {
+    font-size: 1.25rem;
+    color: var(--accent-gold);
+    max-width: 800px;
+    line-height: 1.4;
+  }
+  .candidate-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 16px 28px;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.95rem;
+  }
+  .candidate-card strong {
+    color: var(--accent-cyan);
+  }
+
+  /* Content Grids */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    flex: 1;
+  }
+  .card-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card-box h3 {
+    font-size: 1.05rem;
+    color: var(--accent-cyan);
+  }
+  .card-box.gold h3 { color: var(--accent-gold); }
+  .card-box.emerald h3 { color: var(--accent-emerald); }
+  .card-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+  }
+  .card-box li {
+    position: relative;
+    padding-left: 18px;
+    line-height: 1.4;
+  }
+  .card-box li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+    font-size: 1.2rem;
+    top: -2px;
+  }
+  .card-box.gold li::before { color: var(--accent-gold); }
+  .card-box.emerald li::before { color: var(--accent-emerald); }
+
+  /* Q&A Accordion Style */
+  .qa-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+  }
+  .qa-q { font-weight: 800; color: var(--accent-gold); margin-bottom: 4px; font-size: 0.92rem; }
+  .qa-a { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; }
+
+  /* Footer Navigation */
+  .pres-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 24px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    background: rgba(14, 23, 38, 0.85);
+    border-top: 1px solid var(--border-subtle);
+  }
+</style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="pres-header">
+    <div class="pres-brand">
+      <img src="favicon.svg" width="24" height="24" alt="Logo">
+      <span>GeoPulse 360 • Defense Slide Deck</span>
+    </div>
+    <div class="pres-controls">
+      <span id="slideCounter" class="slide-counter">Slide 1 of 12</span>
+      <button class="pres-btn" onclick="prevSlide()">◀ Prev (←)</button>
+      <button class="pres-btn" onclick="nextSlide()">Next (→) ▶</button>
+      <button class="pres-btn" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+      <a href="/" target="_blank" class="pres-btn" style="text-decoration:none; color:var(--accent-cyan); border-color:var(--accent-cyan);">🚀 Open Live App</a>
+    </div>
+  </header>
+
+  <!-- Deck Container -->
+  <main class="deck-container">
+
+    <!-- SLIDE 1: Title Slide -->
+    <div class="slide active">
+      <div class="title-hero">
+        <div class="rec-badge">RAJALAKSHMI ENGINEERING COLLEGE (REC), CHENNAI</div>
+        <div class="category-pill">DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING • 3RD YEAR FINAL PROJECT</div>
+        <h1 class="big-title">GeoPulse 360</h1>
+        <p class="big-subtitle">Real-Time Planetary, Seismic &amp; South Indian Environmental Telemetry Platform</p>
+        
+        <div class="candidate-card">
+          <div>Candidate Name: <strong>ARVIND HARISH</strong> &nbsp;|&nbsp; Register Number: <strong>240701052</strong></div>
+          <div>Course: <strong>Web Programming (Section A)</strong> &nbsp;|&nbsp; Academic Year: <strong>2026</strong></div>
+          <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:4px;">
+            GitHub: <span style="color:#38bdf8;">github.com/arvindharishnataraj/wp-web-programming-project</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Problem Statement -->
+    <div class="slide">
+      <div class="category-pill">Slide 02 • Motivation &amp; Problem Formulation</div>
+      <h2 class="slide-title">Executive Abstract &amp; Problem Statement</h2>
+      <div class="grid-3">
+        <div class="card-box gold">
+          <h3>The Challenge</h3>
+          <ul>
+            <li>Earthquake, cyclone, and atmospheric telemetry are scattered across isolated, uncoordinated databases.</li>
+            <li>Most existing weather applications refresh once every 6 to 12 hours, missing rapid micro-climate shifts.</li>
+            <li>South Indian coastlines are vulnerable to sudden Bay of Bengal cyclonic depressions and Indian Ocean tsunamis.</li>
+          </ul>
+        </div>
+        <div class="card-box">
+          <h3>The Proposed Solution</h3>
+          <ul>
+            <li><strong>GeoPulse 360:</strong> A unified, high-performance single-page mission control dashboard.</li>
+            <li>Aggregates live USGS seismic telemetry, Open-Meteo weather &amp; AQI, and ISS orbital data.</li>
+            <li>Zero subscription fees or proprietary API keys required.</li>
+            <li>Sub-5ms local proxy caching to prevent rate-limiting and maximize throughput.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>Core Web Innovations</h3>
+          <ul>
+            <li><strong>Server-Sent Events (SSE):</strong> Continuous push streaming over persistent HTTP connections.</li>
+            <li><strong>Interactive Leaflet GIS:</strong> Concentric seismic wave markers scaled logarithmically by Richter magnitude.</li>
+            <li><strong>Web Audio API:</strong> In-browser synthetic tactical sonar and emergency alert sirens.</li>
+            <li><strong>Dual Persistence:</strong> Browser LocalStorage + Server JSON file storage.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Data Feeds -->
+    <div class="slide">
+      <div class="category-pill">Slide 03 • Heterogeneous Scientific Sources</div>
+      <h2 class="slide-title">Live Real-Time Scientific Data Architecture</h2>
+      <div class="grid-3">
+        <div class="card-box gold">
+          <h3>USGS Live Seismic Feed</h3>
+          <ul>
+            <li>Real-time global earthquake feeds updating every few seconds.</li>
+            <li>Captures Richter Magnitude, Hypocenter Depth (km), Coordinates, and Official Tsunami Advisories.</li>
+            <li>Calculates regional clusters, deep mantle subduction events (>100km), and peak magnitudes.</li>
+          </ul>
+        </div>
+        <div class="card-box">
+          <h3>Open-Meteo &amp; WMO Telemetry</h3>
+          <ul>
+            <li><strong>Atmospheric Metrics:</strong> Real-time temperature, feels-like, wind vectors, pressure, and humidity.</li>
+            <li><strong>Air Quality Index (AQI):</strong> Real-time US EPA &amp; European AQI ratings with PM2.5 and PM10 breakdown.</li>
+            <li><strong>Predictive Analytics:</strong> 24-hr hourly temperature/precipitation curves + 5-day forecasts.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>Where The ISS At (Space Telemetry)</h3>
+          <ul>
+            <li>Real-time orbital tracking of the International Space Station (ISS).</li>
+            <li>Live telemetry: Latitude/Longitude, orbital velocity (~27,580 km/h), altitude (~420 km).</li>
+            <li>Dynamic SVG satellite marker navigating across continents in real time.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: South India Focus -->
+    <div class="slide">
+      <div class="category-pill">Slide 04 • Regional Focus &amp; Societal Relevance</div>
+      <h2 class="slide-title">South India &amp; Indian Ocean Telemetry Hubs</h2>
+      <div class="grid-3">
+        <div class="card-box">
+          <h3>🌊 Chennai (Tamil Nadu)</h3>
+          <ul>
+            <li>Bay of Bengal coastal radar watch.</li>
+            <li>Monitors tropical depressions, sea breeze fronts, and cyclone landfall wind vectors.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>🏙️ Bengaluru (Karnataka)</h3>
+          <ul>
+            <li>Deccan Plateau climate monitoring.</li>
+            <li>ISRO Satellite Telemetry Headquarters.</li>
+            <li>Diurnal temperature curve and urban AQI index.</li>
+          </ul>
+        </div>
+        <div class="card-box gold">
+          <h3>🏛️ Hyderabad (Telangana)</h3>
+          <ul>
+            <li>Headquarters of <strong>INCOIS</strong> (Indian National Centre for Ocean Information Services).</li>
+            <li>Node for the National Tsunami Early Warning System.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>🌴 Kochi (Kerala)</h3>
+          <ul>
+            <li>Arabian Sea Marine &amp; Monsoon Telemetry.</li>
+            <li>Real-time tracking of Southwest Monsoon arrival and maritime relative humidity.</li>
+          </ul>
+        </div>
+        <div class="card-box">
+          <h3>⚓ Visakhapatnam (Andhra Pradesh)</h3>
+          <ul>
+            <li>East Coast Cyclone Warning Centre.</li>
+            <li>Eastern Naval Command maritime meteorological center.</li>
+          </ul>
+        </div>
+        <div class="card-box gold">
+          <h3>🏝️ Andaman Trench</h3>
+          <ul>
+            <li>Active Indo-Burma subduction fault line.</li>
+            <li>Source of the 2004 Indian Ocean tsunami; highlighted with interactive fault vector.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Full-Stack Architecture -->
+    <div class="slide">
+      <div class="category-pill">Slide 05 • Full-Stack Software Engineering</div>
+      <h2 class="slide-title">System Architecture &amp; Data Pipeline</h2>
+      <div class="grid-2">
+        <div class="card-box">
+          <h3>Backend Core (Node.js &amp; Express)</h3>
+          <ul>
+            <li><strong>REST Proxy Architecture:</strong> Eliminates CORS cross-origin restrictions and encapsulates API logic.</li>
+            <li><strong>Intelligent In-Memory Caching:</strong>
+              <br>• USGS Earthquakes: 25-second TTL
+              <br>• Weather &amp; AQI: 3-minute TTL
+              <br>• ISS Telemetry: 2-second TTL
+            </li>
+            <li><strong>Server-Sent Events (SSE):</strong> Persistent endpoint <code>/api/events/live</code> streaming continuous heartbeat telemetry packets.</li>
+            <li><strong>JSON Database:</strong> CRUD persistence stored in <code>data/bookmarks.json</code>.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>Frontend Engine (Modular ES6+)</h3>
+          <ul>
+            <li><strong>Single Page Architecture:</strong> Pure vanilla ES6+ with zero heavy framework overhead for maximum speed.</li>
+            <li><strong>map.js:</strong> Leaflet.js geospatial engine, custom SVG DivIcons with pulsing CSS animations.</li>
+            <li><strong>charts.js:</strong> Chart.js visualizations with dynamic dark/light theme re-rendering.</li>
+            <li><strong>weather.js:</strong> Geocoding search debouncer, WMO code translator, and AQI gauge rating.</li>
+            <li><strong>audio.js:</strong> Web Audio API acoustic synthesizer generating tactical frequencies.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Mapping & GIS -->
+    <div class="slide">
+      <div class="category-pill">Slide 06 • Geospatial Visualization</div>
+      <h2 class="slide-title">Interactive Geospatial Command Center (Leaflet.js)</h2>
+      <div class="grid-2">
+        <div class="card-box">
+          <h3>Map Capabilities &amp; Basemaps</h3>
+          <ul>
+            <li><strong>100% Free &amp; Unwatermarked Basemaps:</strong>
+              <br>• Esri Dark Canvas (Mission Control Obsidian Theme)
+              <br>• OpenStreetMap Standard (Urban Street Topology)
+              <br>• Esri World Imagery (High-Resolution Satellite Earth)
+              <br>• Topographic Contours (Elevation &amp; Mountain Arcs)
+            </li>
+            <li><strong>Pulsing Seismic Rings:</strong> Concentric SVG wave animations scaled logarithmically by Richter magnitude.</li>
+            <li><strong>Color Hierarchy:</strong> Green (&lt;M2.5), Cyan (M2.5–3.9), Amber (M4.0–4.9), Red (M5.0–6.4), Violet (M6.5+).</li>
+          </ul>
+        </div>
+        <div class="card-box gold">
+          <h3>Tectonic Overlays &amp; Epicenter Weather</h3>
+          <ul>
+            <li><strong>Tectonic Fault Vectors:</strong> Visualizes the Pacific Ring of Fire and the Andaman-Sumatra Subduction Arc.</li>
+            <li><strong>Epicenter Weather Inspection:</strong> One-click button inside every earthquake popup that instantly links map coordinates to live weather conditions at that exact epicenter.</li>
+            <li><strong>Quick Observatory Bar:</strong> Fast teleportation buttons to Chennai, Bengaluru, Hyderabad, Kochi, Vizag, and Andaman.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Chart.js Visual Analytics -->
+    <div class="slide">
+      <div class="category-pill">Slide 07 • Data Visualization</div>
+      <h2 class="slide-title">Multi-Dimensional Analytics (Chart.js)</h2>
+      <div class="grid-3">
+        <div class="card-box">
+          <h3>Magnitude Histogram</h3>
+          <ul>
+            <li>Categorical Bar Chart grouping 24-hr seismic events into standard geological classifications (Micro, Minor, Light, Moderate, Strong).</li>
+            <li>Color-coded bars matching map markers.</li>
+          </ul>
+        </div>
+        <div class="card-box gold">
+          <h3>Hypocenter Depth vs. Magnitude</h3>
+          <ul>
+            <li>2D Scatter Plot correlating focal depth (km) against Richter magnitude.</li>
+            <li>Visualizes shallow crustal fractures versus deep subduction mantle events (&gt;100 km).</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>24-Hour Atmospheric Curve</h3>
+          <ul>
+            <li>Dual-axis line chart: Left Y-axis plots hourly temperature (°C); Right Y-axis plots rain probability (%).</li>
+            <li>Dynamically updates when user selects any South Indian or global city.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Web Audio API -->
+    <div class="slide">
+      <div class="category-pill">Slide 08 • Browser Acoustic Synthesis</div>
+      <h2 class="slide-title">Synthetic Acoustic Warning System (Web Audio API)</h2>
+      <div class="grid-2">
+        <div class="card-box">
+          <h3>Why Synthesized Audio?</h3>
+          <ul>
+            <li>Conventional web apps load external MP3/WAV files, causing network latency, autoplay blocks, and bandwidth waste.</li>
+            <li>GeoPulse 360 uses browser-native <code>AudioContext</code>, <code>OscillatorNode</code>, and <code>GainNode</code>.</li>
+            <li>Zero audio file downloads — 100% generated in real time via mathematical wave functions.</li>
+            <li>Sub-millisecond acoustic response time.</li>
+          </ul>
+        </div>
+        <div class="card-box gold">
+          <h3>Acoustic Sound Profiles</h3>
+          <ul>
+            <li><strong>Tactical Sonar Ping:</strong> Sine wave sweeping from 1046.5 Hz (C6) down to 523.25 Hz with exponential decay (plays on refresh).</li>
+            <li><strong>Critical Hazard Siren:</strong> Dual-tone sawtooth wave (440 Hz &amp; 880 Hz) modulating rapidly to signal major earthquakes (M &gt;= 5.0).</li>
+            <li><strong>Tactile Click:</strong> Crisp 800 Hz to 400 Hz 40ms pulse for button feedback.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: REST API Reference -->
+    <div class="slide">
+      <div class="category-pill">Slide 09 • API Reference &amp; Protocol</div>
+      <h2 class="slide-title">Backend RESTful API Specifications</h2>
+      <div class="grid-2">
+        <div class="card-box">
+          <h3>Telemetry Endpoints</h3>
+          <ul>
+            <li><code>GET /api/health</code>: System health, uptime seconds, and timestamp.</li>
+            <li><code>GET /api/earthquakes?minMag=X&amp;limit=Y</code>: Cached USGS feed with aggregate stats.</li>
+            <li><code>GET /api/weather?lat=X&amp;lon=Y</code>: Parallel meteorological &amp; AQI lookup.</li>
+            <li><code>GET /api/geocode?q=Query</code>: Debounced global city autocomplete.</li>
+            <li><code>GET /api/iss</code>: Live orbital coordinates and speed.</li>
+            <li><code>GET /api/stats</code>: High-level KPI summaries for dashboard cards.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>Streaming &amp; Export Endpoints</h3>
+          <ul>
+            <li><code>GET /api/events/live</code>: Server-Sent Events (SSE) persistent stream pushing telemetry heartbeats every 6 seconds.</li>
+            <li><code>GET /api/bookmarks</code>: Lists all saved user observation stations.</li>
+            <li><code>POST /api/bookmarks</code>: Saves new custom coordinates to <code>bookmarks.json</code>.</li>
+            <li><code>DELETE /api/bookmarks/:id</code>: Deletes an observation station.</li>
+            <li><code>GET /api/export?format=csv</code>: Generates and streams downloadable CSV incident reports.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Academic Rubric Alignment -->
+    <div class="slide">
+      <div class="category-pill">Slide 10 • Academic Evaluation</div>
+      <h2 class="slide-title">Web Programming Curriculum Competencies Covered</h2>
+      <div class="grid-3">
+        <div class="card-box">
+          <h3>Frontend Design (HTML5 / CSS3)</h3>
+          <ul>
+            <li>Semantic HTML5 layout.</li>
+            <li>CSS3 Custom Variables for seamless Dark/Light theme switching.</li>
+            <li>CSS Grid &amp; Flexbox responsive layout.</li>
+            <li>Print media stylesheet (<code>@media print</code>).</li>
+          </ul>
+        </div>
+        <div class="card-box gold">
+          <h3>Asynchronous JavaScript</h3>
+          <ul>
+            <li>Modern ES6+ (<code>async/await</code>, <code>Promise.all</code>).</li>
+            <li>Fetch API for REST integration.</li>
+            <li>Server-Sent Events (EventSource).</li>
+            <li>Web Audio API sound synthesis.</li>
+          </ul>
+        </div>
+        <div class="card-box emerald">
+          <h3>Full-Stack &amp; DevOps</h3>
+          <ul>
+            <li>Node.js / Express decoupled server.</li>
+            <li>In-memory TTL caching layer.</li>
+            <li>Git repository version control.</li>
+            <li>Public HTTPS deployment tunnel.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: Viva / Defense Questions -->
+    <div class="slide">
+      <div class="category-pill">Slide 11 • Viva-Voce Cheat Sheet</div>
+      <h2 class="slide-title">Expected Viva-Voce Questions &amp; Answers</h2>
+      <div style="flex:1; overflow-y:auto; padding-right:6px;">
+        <div class="qa-item">
+          <div class="qa-q">Q1: Why did you choose Server-Sent Events (SSE) instead of WebSockets?</div>
+          <div class="qa-a">Ans: SSE operates over standard HTTP, has native browser reconnection, works through corporate proxies, and is much lighter for unidirectional server-to-client telemetry pushing without the full-duplex overhead of WebSockets.</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q">Q2: How do you prevent API rate limits from third-party services?</div>
+          <div class="qa-a">Ans: We built an in-memory TTL cache inside <code>server.js</code>. USGS earthquakes are cached for 25s, weather for 3 minutes, and ISS for 2s. Repeated hits resolve in &lt;5ms without re-querying external servers.</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q">Q3: How is data persisted across browser sessions?</div>
+          <div class="qa-a">Ans: Dual persistence: User UI preferences (theme, audio, intervals) are stored in browser <code>LocalStorage</code>, while observation stations are synchronized to the backend <code>data/bookmarks.json</code> database.</div>
+        </div>
+        <div class="qa-item">
+          <div class="qa-q">Q4: Why is this project significant for South India?</div>
+          <div class="qa-a">Ans: It provides dedicated observatories for Chennai (cyclone radar), Bengaluru (ISRO hub), Hyderabad (INCOIS tsunami center), Kochi (monsoon onset), Vizag, and the Andaman subduction trench fault line.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: Conclusion -->
+    <div class="slide">
+      <div class="title-hero">
+        <div class="rec-badge">RAJALAKSHMI ENGINEERING COLLEGE (REC) • CHENNAI</div>
+        <h2 class="big-title" style="font-size:2.4rem;">Thank You!</h2>
+        <p class="big-subtitle" style="font-size:1.1rem;">GeoPulse 360 is live, fully functional, and ready for evaluation.</p>
+
+        <div class="candidate-card" style="text-align:left; max-width:680px; width:100%;">
+          <div>👤 Candidate: <strong>ARVIND HARISH</strong> &nbsp;|&nbsp; Roll No: <strong>240701052</strong></div>
+          <div>🏫 College: <strong>Rajalakshmi Engineering College (REC)</strong></div>
+          <div>📚 Subject: <strong>Web Programming — Section A</strong></div>
+          <div>🌐 Live Project Demo: <a href="https://0e8f329b8a1d6e.lhr.life" target="_blank" style="color:var(--accent-cyan); text-decoration:none;"><strong>https://0e8f329b8a1d6e.lhr.life</strong></a></div>
+          <div>📁 GitHub Repository: <a href="https://github.com/arvindharishnataraj/wp-web-programming-project" target="_blank" style="color:#38bdf8; text-decoration:none;"><strong>github.com/arvindharishnataraj/wp-web-programming-project</strong></a></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer Navigation -->
+  <footer class="pres-footer">
+    <span>Rajalakshmi Engineering College (REC) • Arvind Harish (240701052) • Web Programming 'A'</span>
+    <span>Use Left/Right Arrow Keys or on-screen buttons to navigate</span>
+  </footer>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('slideCounter');
+
+  function updateSlide() {
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === currentSlide));
+    counter.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+  }
+
+  function nextSlide() {
+    if (currentSlide < slides.length - 1) {
+      currentSlide++;
+      updateSlide();
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      updateSlide();
+    }
+  }
+
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    } else if (e.key === 'f' || e.key === 'F') {
+      toggleFullScreen();
+    }
+  });
+
+  updateSlide();
+</script>
+
+</body>
+</html>
